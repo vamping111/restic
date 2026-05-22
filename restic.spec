@@ -84,7 +84,7 @@ Backup destinations can be:
 
 
 Name:    restic
-Release: ROCKIT3%{buildid}%{?dist}
+Release: ROCKIT4%{buildid}%{?dist}
 Summary: Fast, secure, efficient backup program
 URL:     %{gourl}
 License: BSD
@@ -92,6 +92,7 @@ Source0: %{name}-%{version}.tar.gz
 
 ExcludeArch: s390x
 BuildRequires: golang >= 1.18.0
+BuildRequires: golang < 1.20
 
 %description
 %{common_description}
@@ -102,6 +103,12 @@ BuildRequires: golang >= 1.18.0
 
 
 %build
+%if 0%{?redos} == 8
+export LDFLAGS=""
+export CFLAGS=""
+export CGO_CFLAGS=""
+export CGO_LDFLAGS=""
+%endif
 export GO111MODULE=on
 export GOFLAGS=-mod=vendor
 %gobuild -o %{gobuilddir}/bin/%{name} %{goipath}/cmd/restic
